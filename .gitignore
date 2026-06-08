@@ -1,0 +1,16 @@
+# Backend
+backend/node_modules/
+backend/.env
+
+# Flutter
+swappit_app/.dart_tool/
+swappit_app/.flutter-plugins
+swappit_app/.flutter-plugins-dependencies
+swappit_app/build/
+swappit_app/.packages
+swappit_app/pubspec.lock
+
+# General
+.DS_Store
+Thumbs.db
+*.log
