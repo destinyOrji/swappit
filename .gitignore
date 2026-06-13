@@ -2,13 +2,20 @@
 backend/node_modules/
 backend/.env
 
-# Flutter
-swappit_app/.dart_tool/
-swappit_app/.flutter-plugins
-swappit_app/.flutter-plugins-dependencies
-swappit_app/build/
-swappit_app/.packages
-swappit_app/pubspec.lock
+# Flutter build
+swappit_flutter/build/
+swappit_flutter/.dart_tool/
+swappit_flutter/.flutter-plugins
+swappit_flutter/.flutter-plugins-dependencies
+swappit_flutter/.packages
+swappit_flutter/pubspec.lock
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
 
 # General
 .DS_Store

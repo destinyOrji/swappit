@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Swappit — App Preview</title>
+<style>
+  /* ── Reset & Base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --primary:       #00BFA6;
+    --primary-dark:  #008F7A;
+    --primary-light: #4DD0C4;
+    --primary-surf:  #E0F7F5;
+    --accent:        #FF6B6B;
+    --bg:            #F5F7FA;
+    --surface:       #FFFFFF;
+    --surface-var:   #F0F2F5;
+    --text1:         #1A1A2E;
+    --text2:         #6B7280;
+    --texth:         #9CA3AF;
+    --border:        #E5E7EB;
+    --success:       #10B981;
+    --warning:       #F59E0B;
+    --error:         #EF4444;
+    --radius:        14px;
+    --phone-w:       375px;
+    --phone-h:       780px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0f172a;
+    min-height: 100vh;
+    color: var(--text1);
+  }
+
+  /* ── Layout ── */
+  .app-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px 60px;
+  }
+
+  .app-title {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: .6;
+  }
+
+  .nav-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 32px;
+  }
+
+  .nav-btn {
+    padding: 8px 16px;
+    border-radius: 30px;
+    border: 1.5px solid rgba(255,255,255,.15);
+    background: rgba(255,255,255,.07);
+    color: rgba(255,255,255,.6);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .nav-btn:hover { background: rgba(255,255,255,.15); color: #fff; }
+  .nav-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+  /* ── Phone Frame ── */
+  .phone-frame {
+    width: var(--phone-w);
+    height: var(--phone-h);
+    background: var(--bg);
+    border-radius: 44px;
+    overflow: hidden;
+    position: relative;
+    box-shadow:
+      0 0 0 10px #1e293b,
+      0 0 0 12px #334155,
+      0 40px 80px rgba(0,0,0,.6);
+  }
+
+  .phone-notch {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 28px;
+    background: #1e293b;
+    border-radius: 0 0 18px 18px;
+    z-index: 100;
+  }
+
+  /* ── Screens ── */
+  .screen {
+    display: none;
+    width: 100%; height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-direction: column;
+    background: var(--bg);
+    position: absolute;
+    top: 0; left: 0;
+  }
+  .screen.active { display: flex; }
+
+  /* ── Scrollbar ── */
+  .screen::-webkit-scrollbar { width: 4px; }
+  .screen::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  /* ══════════════════════════════════
+     SCREEN 1 — WELCOME
+  ══════════════════════════════════ */
+  #s-welcome {
+    background: linear-gradient(160deg, var(--primary) 0%, var(--primary-dark) 100%);
+  }
+  .welcome-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 48px 28px 36px;
+  }
+  .welcome-logo {
+    width: 110px; height: 110px;
+    background: rgba(255,255,255,.2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 32px auto 0;
+  }
+  .welcome-logo svg { width: 58px; height: 58px; }
+  .welcome-headline {
+    margin-top: 36px;
+    font-size: 38px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.15;
+  }
+  .welcome-sub {
+    margin-top: 14px;
+    font-size: 15px;
+    color: rgba(255,255,255,.82);
+    line-height: 1.6;
+  }
+  .welcome-actions {
+    margin-top: auto;
+    padding-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .btn-primary {
+    height: 52px;
+    border-radius: var(--radius);
+    border: none;
+    background: #fff;
+    color: var(--primary);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity .2s;
+    width: 100%;
+  }
+  .btn-primary:hover { opacity: .9; }
+  .btn-outline-white {
+    height: 52px;
+    border-radius: var(--radius);
+    border: 1.5px solid rgba(255,255,255,.7);
+    background: transparent;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: background .2s;
+  }
+  .btn-outline-white:hover { background: rgba(255,255,255,.1); }
+
+  /* ══════════════════════════════════
+     SCREEN 2 — SIGN UP
+  ══════════════════════════════════ */
+  #s-signup { background: var(--bg); }
+  .screen-inner {
+    padding: 52px 24px 32px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+  .back-btn {
+    position: absolute;
+    top: 38px; left: 16px;
+    width: 36px; height: 36px;
+    background: var(--surface-var);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    border: none;
+  }
+  .back-btn svg { width: 16px; height: 16px; color: var(--text1); }
+  .screen-title { font-size: 28px; font-weight: 800; color: var(--text1); margin-top: 16px; }
+  .screen-sub { font-size: 14px; color: var(--text2); margin-top: 6px; }
+
+  .google-btn {
+    height: 52px;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text1);
+    margin-top: 24px;
+    width: 100%;
+    transition: background .15s;
+  }
+  .google-btn:hover { background: var(--surface-var); }
+  .google-g {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    font-weight: 800;
+    color: #4285F4;
+  }
+
+  .divider-row {
+    display: flex; align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+    color: var(--texth);
+    font-size: 12px;
+  }
+  .divider-row::before, .divider-row::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .field-group { display: flex; flex-direction: column; gap: 14px; }
+  .field-wrap { display: flex; flex-direction: column; gap: 5px; }
+  .field-label { font-size: 12px; font-weight: 600; color: var(--text2); }
+  .field-input {
+    height: 48px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: var(--surface-var);
+    padding: 0 14px 0 42px;
+    font-size: 14px;
+    color: var(--text1);
+    outline: none;
+    transition: border-color .2s;
+    width: 100%;
+  }
+  .field-input:focus { border-color: var(--primary); background: var(--surface); }
+  .field-input::placeholder { color: var(--texth); }
+  .field-icon-wrap {
+    position: relative;
+  }
+  .field-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--texth);
+    width: 18px; height: 18px;
+  }
+
+  .terms-row {
+    display: flex; align-items: flex-start; gap: 10px;
+    margin-top: 16px;
+  }
+  .terms-row input[type=checkbox] {
+    margin-top: 2px;
+    accent-color: var(--primary);
+    width: 16px; height: 16px;
+  }
+  .terms-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+  .terms-text a { color: var(--primary); font-weight: 600; text-decoration: none; }
+
+  .btn-teal {
+    height: 52px;
+    border-radius: var(--radius);
+    border: none;
+    background: var(--primary);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 24px;
+    transition: background .2s;
+  }
+  .btn-teal:hover { background: var(--primary-dark); }
+
+  .login-link {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text2);
+    margin-top: 20px;
+  }
+  .login-link span { color: var(--primary); font-weight: 700; cursor: pointer; }
+
+  /* ══════════════════════════════════
+     SCREEN 3 — OTP VERIFICATION
+  ══════════════════════════════════ */
+  #s-verify { background: var(--bg); }
+  .verify-icon-box {
+    width: 64px; height: 64px;
+    border-radius: 16px;
+    background: var(--primary-surf);
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 24px;
+  }
+  .verify-icon-box svg { width: 32px; height: 32px; color: var(--primary); }
+  .otp-row {
+    display: flex; gap: 10px;
+    justify-content: center;
+    margin: 36px 0;
+  }
+  .otp-box {
+    width: 48px; height: 56px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: var(--surface-var);
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text1);
+    outline: none;
+    transition: border-color .2s;
+  }
+  .otp-box:focus { border-color: var(--primary); background: var(--primary-surf); }
+  .resend-text {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text2);
+    margin-top: 18px;
+  }
+  .resend-text span { color: var(--primary); font-weight: 600; cursor: pointer; }
+
+  /* ══════════════════════════════════
+     SCREEN 4 — ONBOARDING
+  ══════════════════════════════════ */
+  #s-onboard { background: var(--bg); }
+  .progress-header {
+    padding: 44px 24px 0;
+  }
+  .progress-meta {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+  }
+  .progress-step-label { font-size: 13px; color: var(--text2); font-weight: 500; }
+  .skip-btn { font-size: 13px; color: var(--text2); background: none; border: none; cursor: pointer; }
+  .progress-bar-track {
+    height: 4px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+
+  .onboard-step { display: none; padding: 24px; flex-direction: column; flex: 1; }
+  .onboard-step.active { display: flex; }
+
+  .onboard-title { font-size: 24px; font-weight: 800; color: var(--text1); margin-top: 8px; }
+  .onboard-sub { font-size: 14px; color: var(--text2); margin-top: 8px; line-height: 1.5; }
+
+  /* Photo step */
+  .photo-circle-wrap {
+    display: flex; justify-content: center;
+    margin: 44px 0;
+    position: relative;
+  }
+  .photo-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: var(--primary-surf);
+    border: 2.5px solid var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .photo-circle svg { width: 64px; height: 64px; color: var(--primary); }
+  .photo-edit-btn {
+    position: absolute;
+    bottom: 4px; right: calc(50% - 73px);
+    width: 36px; height: 36px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid white;
+    cursor: pointer;
+  }
+  .photo-edit-btn svg { width: 16px; height: 16px; color: white; }
+
+  /* Skills chips */
+  .skills-search {
+    height: 44px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: var(--surface-var);
+    padding: 0 14px 0 40px;
+    font-size: 14px;
+    outline: none;
+    width: 100%;
+    margin-bottom: 14px;
+    transition: border-color .2s;
+  }
+  .skills-search:focus { border-color: var(--primary); }
+  .skills-search-wrap { position: relative; }
+  .skills-search-icon {
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    width: 16px; height: 16px;
+    color: var(--texth);
+  }
+  .chips-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .chip {
+    padding: 7px 14px;
+    border-radius: 30px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .18s;
+    color: var(--text1);
+    user-select: none;
+  }
+  .chip:hover { border-color: var(--primary); color: var(--primary); }
+  .chip.selected {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+  }
+  .chip.selected-accent {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .selected-count {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 8px;
+    min-height: 18px;
+  }
+
+  .onboard-footer { margin-top: auto; padding-top: 20px; }
+
+  /* ══════════════════════════════════
+     SCREEN 5 — SUCCESS
+  ══════════════════════════════════ */
+  #s-success {
+    background: linear-gradient(160deg, var(--primary) 0%, var(--primary-dark) 100%);
+    align-items: center;
+    justify-content: center;
+  }
+  .success-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 32px;
+  }
+  .success-icon {
+    width: 96px; height: 96px;
+    background: rgba(255,255,255,.2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .success-icon svg { width: 52px; height: 52px; color: white; }
+  .success-title { font-size: 34px; font-weight: 800; color: white; margin-top: 28px; text-align: center; }
+  .success-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,.85);
+    text-align: center;
+    line-height: 1.6;
+    margin-top: 14px;
+  }
+
+  /* ══════════════════════════════════
+     SCREEN 6 — HOME
+  ══════════════════════════════════ */
+  #s-home { background: var(--bg); }
+  .home-header {
+    padding: 44px 20px 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  .home-greeting .hi { font-size: 24px; font-weight: 800; color: var(--text1); }
+  .home-greeting .sub { font-size: 13px; color: var(--text2); margin-top: 2px; }
+  .home-header-right { display: flex; align-items: center; gap: 8px; }
+  .notif-btn {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    position: relative;
+  }
+  .notif-dot {
+    position: absolute;
+    width: 9px; height: 9px;
+    background: var(--accent);
+    border-radius: 50%;
+    top: 5px; right: 5px;
+    border: 1.5px solid white;
+  }
+  .avatar-sm {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--primary-surf);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .avatar-sm svg { width: 20px; height: 20px; color: var(--primary); }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 20px 20px 0;
+  }
+  .stat-card {
+    padding: 14px;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .stat-card.green { background: rgba(16,185,129,.1); }
+  .stat-card.yellow { background: rgba(245,158,11,.1); }
+  .stat-card.teal { background: rgba(0,191,166,.1); }
+  .stat-icon { width: 22px; height: 22px; }
+  .stat-icon.green { color: var(--success); }
+  .stat-icon.yellow { color: var(--warning); }
+  .stat-icon.teal { color: var(--primary); }
+  .stat-value { font-size: 22px; font-weight: 800; }
+  .stat-value.green { color: var(--success); }
+  .stat-value.yellow { color: var(--warning); }
+  .stat-value.teal { color: var(--primary); }
+  .stat-label { font-size: 11px; color: var(--text2); font-weight: 500; }
+
+  .section-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text1);
+    padding: 20px 20px 10px;
+  }
+
+  .user-card {
+    margin: 0 20px 12px;
+    padding: 14px;
+    background: var(--surface);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: box-shadow .2s;
+  }
+  .user-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); }
+  .user-avatar {
+    width: 54px; height: 54px;
+    border-radius: 50%;
+    background: var(--primary-surf);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+  }
+  .user-info { flex: 1; min-width: 0; }
+  .user-name {
+    font-size: 14px; font-weight: 700; color: var(--text1);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .verified-icon { width: 14px; height: 14px; color: var(--primary); }
+  .user-loc { font-size: 11px; color: var(--texth); margin-top: 2px; }
+  .user-skills { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .skill-tag {
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: var(--primary-surf);
+    color: var(--primary);
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .user-card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+  .rating-row { display: flex; align-items: center; gap: 2px; font-size: 13px; font-weight: 600; }
+  .swap-btn {
+    padding: 5px 14px;
+    border-radius: 20px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+  }
+
+  /* ══════════════════════════════════
+     SCREEN 7 — SEARCH
+  ══════════════════════════════════ */
+  #s-search { background: var(--bg); }
+  .search-header { padding: 44px 20px 0; }
+  .search-bar-wrap {
+    position: relative;
+    margin-top: 16px;
+  }
+  .search-bar {
+    height: 50px;
+    border-radius: 14px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    padding: 0 16px 0 44px;
+    font-size: 14px;
+    outline: none;
+    width: 100%;
+    transition: border-color .2s;
+    color: var(--text1);
+  }
+  .search-bar:focus { border-color: var(--primary); }
+  .search-bar::placeholder { color: var(--texth); }
+  .search-icon {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    width: 18px; height: 18px;
+    color: var(--texth);
+  }
+
+  /* ══════════════════════════════════
+     SCREEN 8 — CHATS
+  ══════════════════════════════════ */
+  #s-chats { background: var(--bg); }
+  .chat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .chat-item:hover { background: var(--surface-var); }
+  .chat-avatar {
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary);
+  }
+  .chat-info { flex: 1; min-width: 0; }
+  .chat-name { font-size: 14px; font-weight: 600; color: var(--text1); }
+  .chat-msg { font-size: 12px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+  .chat-right { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+  .chat-time { font-size: 11px; color: var(--texth); }
+  .unread-badge {
+    width: 20px; height: 20px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: white;
+  }
+  .chat-divider { height: 1px; background: var(--border); margin: 0 20px; }
+
+  /* ══════════════════════════════════
+     SCREEN 9 — PROFILE
+  ══════════════════════════════════ */
+  #s-profile { background: var(--bg); }
+  .profile-hero {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    padding: 44px 20px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+  .profile-avatar-wrap { position: relative; }
+  .profile-avatar {
+    width: 82px; height: 82px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    font-weight: 800;
+    color: white;
+    border: 3px solid rgba(255,255,255,.4);
+  }
+  .profile-edit-dot {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 26px; height: 26px;
+    background: var(--accent);
+    border-radius: 50%;
+    border: 2px solid white;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .profile-name {
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 12px;
+    font-size: 20px;
+    font-weight: 800;
+    color: white;
+  }
+  .profile-loc { font-size: 13px; color: rgba(255,255,255,.75); margin-top: 3px; }
+  .profile-logout {
+    position: absolute;
+    top: 44px; right: 16px;
+    background: rgba(255,255,255,.15);
+    border: none;
+    border-radius: 50%;
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .profile-stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .pstat { text-align: center; }
+  .pstat-val { font-size: 20px; font-weight: 800; color: var(--text1); }
+  .pstat-label { font-size: 11px; color: var(--text2); margin-top: 2px; }
+  .pstat-divider { width: 1px; background: var(--border); }
+
+  .profile-section { padding: 16px 20px; }
+  .profile-section-title { font-size: 14px; font-weight: 700; color: var(--text1); margin-bottom: 10px; }
+  .bio-box {
+    padding: 14px;
+    background: var(--surface);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+  .profile-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .profile-chip {
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .profile-chip.teal { background: var(--primary-surf); color: var(--primary); border: 1px solid rgba(0,191,166,.25); }
+  .profile-chip.coral { background: rgba(255,107,107,.1); color: var(--accent); border: 1px solid rgba(255,107,107,.25); }
+
+  /* ── Bottom Nav ── */
+  .bottom-nav {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 68px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 8px 8px;
+    z-index: 50;
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 12px;
+    transition: background .15s;
+    flex: 1;
+  }
+  .nav-item:hover { background: var(--surface-var); }
+  .nav-item svg { width: 22px; height: 22px; color: var(--texth); }
+  .nav-item.active svg { color: var(--primary); }
+  .nav-label { font-size: 10px; color: var(--texth); font-weight: 500; }
+  .nav-item.active .nav-label { color: var(--primary); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="app-wrapper">
+  <p class="app-title">Swappit · App Preview</p>
+
+  <!-- Screen Navigation -->
+  <div class="nav-bar">
+    <button class="nav-btn active" onclick="showScreen('welcome', this)">Welcome</button>
+    <button class="nav-btn" onclick="showScreen('signup', this)">Sign Up</button>
+    <button class="nav-btn" onclick="showScreen('verify', this)">OTP</button>
+    <button class="nav-btn" onclick="showScreen('onboard', this)">Onboarding</button>
+    <button class="nav-btn" onclick="showScreen('success', this)">Success</button>
+    <button class="nav-btn" onclick="showScreen('home', this)">Home</button>
+    <button class="nav-btn" onclick="showScreen('search', this)">Search</button>
+    <button class="nav-btn" onclick="showScreen('chats', this)">Chats</button>
+    <button class="nav-btn" onclick="showScreen('profile', this)">Profile</button>
+  </div>
+
+  <!-- Phone Frame -->
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+
+    <!-- ── WELCOME ── -->
+    <div class="screen active" id="s-welcome">
+      <div class="welcome-body">
+        <div class="welcome-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 16l-4-4m0 0l4-4m-4 4h18M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </div>
+        <div class="welcome-headline">Trade Skills,<br>Not Money.</div>
+        <div class="welcome-sub">Swap what you know for what you need. No cash, just community.</div>
+        <div class="welcome-actions">
+          <button class="btn-primary" onclick="showScreen('signup', document.querySelectorAll('.nav-btn')[1])">Get Started</button>
+          <button class="btn-outline-white" onclick="showScreen('signup', document.querySelectorAll('.nav-btn')[1])">I already have an account</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SIGN UP ── -->
+    <div class="screen" id="s-signup">
+      <button class="back-btn" onclick="showScreen('welcome', document.querySelectorAll('.nav-btn')[0])">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="screen-inner">
+        <div class="screen-title">Create Account</div>
+        <div class="screen-sub">Start trading skills today — it's free.</div>
+
+        <button class="google-btn">
+          <div class="google-g">G</div>
+          Continue with Google
+        </button>
+
+        <div class="divider-row">or sign up with email</div>
+
+        <div class="field-group">
+          <div class="field-wrap">
+            <div class="field-label">FULL NAME</div>
+            <div class="field-icon-wrap">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+              <input class="field-input" type="text" placeholder="John Doe" />
+            </div>
+          </div>
+          <div class="field-wrap">
+            <div class="field-label">EMAIL ADDRESS</div>
+            <div class="field-icon-wrap">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+              <input class="field-input" type="email" placeholder="you@example.com" />
+            </div>
+          </div>
+          <div class="field-wrap">
+            <div class="field-label">PHONE (OPTIONAL)</div>
+            <div class="field-icon-wrap">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 013.08 4.18 2 2 0 015.06 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L9.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+              <input class="field-input" type="tel" placeholder="+1 234 567 8900" />
+            </div>
+          </div>
+          <div class="field-wrap">
+            <div class="field-label">PASSWORD</div>
+            <div class="field-icon-wrap">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+              <input class="field-input" type="password" placeholder="At least 6 characters" />
+            </div>
+          </div>
+        </div>
+
+        <div class="terms-row">
+          <input type="checkbox" id="terms" checked />
+          <div class="terms-text">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></div>
+        </div>
+
+        <button class="btn-teal" onclick="showScreen('verify', document.querySelectorAll('.nav-btn')[2])">Create Account</button>
+        <div class="login-link">Already have an account? <span onclick="showScreen('signup', document.querySelectorAll('.nav-btn')[1])">Log In</span></div>
+      </div>
+    </div>
+
+    <!-- ── OTP VERIFICATION ── -->
+    <div class="screen" id="s-verify">
+      <button class="back-btn" onclick="showScreen('signup', document.querySelectorAll('.nav-btn')[1])">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="screen-inner">
+        <div class="verify-icon-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#00BFA6" stroke-width="2" stroke-linecap="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </div>
+        <div class="screen-title">Verify Email</div>
+        <div class="screen-sub">We sent a 6-digit code to<br><strong style="color:var(--text1)">you@example.com</strong></div>
+
+        <div class="otp-row">
+          <input class="otp-box" maxlength="1" />
+          <input class="otp-box" maxlength="1" />
+          <input class="otp-box" maxlength="1" />
+          <input class="otp-box" maxlength="1" />
+          <input class="otp-box" maxlength="1" />
+          <input class="otp-box" maxlength="1" />
+        </div>
+
+        <button class="btn-teal" onclick="showScreen('onboard', document.querySelectorAll('.nav-btn')[3])">Verify</button>
+        <div class="resend-text">Didn't get a code? <span>Resend in 54s</span></div>
+      </div>
+    </div>
+
+    <!-- ── ONBOARDING ── -->
+    <div class="screen" id="s-onboard">
+      <div class="progress-header">
+        <div class="progress-meta">
+          <span class="progress-step-label" id="step-label">Step 1 of 4</span>
+          <button class="skip-btn" onclick="advanceStep(3)">Skip</button>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="prog-fill" style="width:25%"></div>
+        </div>
+      </div>
+
+      <!-- Step 1: Photo -->
+      <div class="onboard-step active" id="ob-step-1">
+        <div class="onboard-title">Add a profile photo</div>
+        <div class="onboard-sub">Help others recognize you — a photo builds trust.</div>
+        <div class="photo-circle-wrap">
+          <div class="photo-circle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          </div>
+          <div class="photo-edit-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </div>
+        </div>
+        <div class="onboard-footer">
+          <button class="btn-teal" onclick="advanceStep(2)">Skip for now</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Bio & Location -->
+      <div class="onboard-step" id="ob-step-2">
+        <div class="onboard-title">Tell us about you</div>
+        <div class="onboard-sub">A short bio and your city help others connect with you.</div>
+        <div style="margin-top:24px; display:flex; flex-direction:column; gap:14px;">
+          <div class="field-icon-wrap">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <input class="field-input" type="text" placeholder="Your City / Location" value="New York, USA" />
+          </div>
+          <textarea style="border-radius:12px;border:1.5px solid var(--border);background:var(--surface-var);padding:12px;font-size:14px;font-family:inherit;resize:none;outline:none;color:var(--text1);height:100px;" placeholder="e.g. I'm a web developer who loves music...">I'm a freelance web developer who loves teaching Python and learning design skills.</textarea>
+        </div>
+        <div class="onboard-footer">
+          <button class="btn-teal" onclick="advanceStep(3)">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Offer Skills -->
+      <div class="onboard-step" id="ob-step-3">
+        <div class="onboard-title">What can you offer?</div>
+        <div class="onboard-sub">Select skills you can teach or provide to others.</div>
+        <div style="margin-top:20px;">
+          <div class="skills-search-wrap">
+            <svg class="skills-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input class="skills-search" placeholder="Search skills..." oninput="filterChips(this,'offer-chips')" />
+          </div>
+          <div class="selected-count" id="offer-count"></div>
+          <div class="chips-wrap" id="offer-chips"></div>
+        </div>
+        <div class="onboard-footer">
+          <button class="btn-teal" onclick="advanceStep(4)">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Want Skills -->
+      <div class="onboard-step" id="ob-step-4">
+        <div class="onboard-title">What do you want to learn?</div>
+        <div class="onboard-sub">Pick skills you'd like to receive in a trade.</div>
+        <div style="margin-top:20px;">
+          <div class="skills-search-wrap">
+            <svg class="skills-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input class="skills-search" placeholder="Search skills..." oninput="filterChips(this,'want-chips')" />
+          </div>
+          <div class="selected-count" id="want-count" style="color:var(--accent)"></div>
+          <div class="chips-wrap" id="want-chips"></div>
+        </div>
+        <div class="onboard-footer">
+          <button class="btn-teal" onclick="showScreen('success', document.querySelectorAll('.nav-btn')[4])">Finish Setup</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SUCCESS ── -->
+    <div class="screen" id="s-success">
+      <div class="success-body" style="margin-top:auto;margin-bottom:auto;">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="success-title">You're all set!</div>
+        <div class="success-sub">Welcome to Swappit. Your profile is ready — start trading skills with amazing people.</div>
+        <button class="btn-primary" style="margin-top:48px;" onclick="showScreen('home', document.querySelectorAll('.nav-btn')[5])">Explore Swappit</button>
+      </div>
+    </div>
+
+    <!-- ── HOME ── -->
+    <div class="screen" id="s-home">
+      <div style="overflow-y:auto; padding-bottom:70px; flex:1;">
+        <div class="home-header">
+          <div class="home-greeting">
+            <div class="hi">Hi, Alex 👋</div>
+            <div class="sub">What will you swap today?</div>
+          </div>
+          <div class="home-header-right">
+            <div class="notif-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A2E" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+              <div class="notif-dot"></div>
+            </div>
+            <div class="avatar-sm">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card green">
+            <svg class="stat-icon green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <div class="stat-value green">12</div>
+            <div class="stat-label">Completed</div>
+          </div>
+          <div class="stat-card yellow">
+            <svg class="stat-icon yellow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            <div class="stat-value yellow">3</div>
+            <div class="stat-label">Pending</div>
+          </div>
+          <div class="stat-card teal">
+            <svg class="stat-icon teal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <div class="stat-value teal">4.8</div>
+            <div class="stat-label">Rating ⭐</div>
+          </div>
+        </div>
+
+        <div class="section-title">Recommended for you</div>
+
+        <div class="user-card">
+          <div class="user-avatar">JD</div>
+          <div class="user-info">
+            <div class="user-name">
+              Jamie Davis
+              <svg class="verified-icon" viewBox="0 0 24 24" fill="#00BFA6"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+            </div>
+            <div class="user-loc">📍 Austin, TX</div>
+            <div class="user-skills">
+              <span class="skill-tag">Guitar</span>
+              <span class="skill-tag">Music Prod.</span>
+            </div>
+          </div>
+          <div class="user-card-right">
+            <div class="rating-row">⭐ 4.9</div>
+            <button class="swap-btn">Swap</button>
+          </div>
+        </div>
+
+        <div class="user-card">
+          <div class="user-avatar" style="background:#FFF0F0;color:var(--accent)">SR</div>
+          <div class="user-info">
+            <div class="user-name">Sara Ramos</div>
+            <div class="user-loc">📍 Miami, FL</div>
+            <div class="user-skills">
+              <span class="skill-tag">UI/UX Design</span>
+              <span class="skill-tag">Figma</span>
+            </div>
+          </div>
+          <div class="user-card-right">
+            <div class="rating-row">⭐ 4.7</div>
+            <button class="swap-btn">Swap</button>
+          </div>
+        </div>
+
+        <div class="user-card">
+          <div class="user-avatar" style="background:#F0FFF4;color:#10B981">MK</div>
+          <div class="user-info">
+            <div class="user-name">Mike K.
+              <svg class="verified-icon" viewBox="0 0 24 24" fill="#00BFA6"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+            </div>
+            <div class="user-loc">📍 Chicago, IL</div>
+            <div class="user-skills">
+              <span class="skill-tag">Python</span>
+              <span class="skill-tag">Data Science</span>
+            </div>
+          </div>
+          <div class="user-card-right">
+            <div class="rating-row">⭐ 5.0</div>
+            <button class="swap-btn">Swap</button>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-nav" id="bnav-home">
+        <div class="nav-item active" onclick="showScreen('home', document.querySelectorAll('.nav-btn')[5])">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          <span class="nav-label">Home</span>
+        </div>
+        <div class="nav-item" onclick="showScreen('search', document.querySelectorAll('.nav-btn')[6])">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <span class="nav-label">Search</span>
+        </div>
+        <div class="nav-item" onclick="showScreen('chats', document.querySelectorAll('.nav-btn')[7])">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          <span class="nav-label">Chats</span>
+        </div>
+        <div class="nav-item" onclick="showScreen('home', document.querySelectorAll('.nav-btn')[5])">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+          <span class="nav-label">Alerts</span>
+        </div>
+        <div class="nav-item" onclick="showScreen('profile', document.querySelectorAll('.nav-btn')[8])">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span class="nav-label">Profile</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SEARCH ── -->
+    <div class="screen" id="s-search">
+      <div style="flex:1; overflow-y:auto; padding-bottom:70px;">
+        <div class="search-header">
+          <div class="screen-title" style="margin:0">Find Skills</div>
+          <div class="screen-sub" style="margin:4px 0 0">Search people by skill</div>
+          <div class="search-bar-wrap">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input class="search-bar" placeholder="e.g. Web Development, Guitar..." value="Guitar" />
+          </div>
+        </div>
+        <div style="padding: 16px 0">
+          <div class="user-card">
+            <div class="user-avatar">JD</div>
+            <div class="user-info">
+              <div class="user-name">Jamie Davis</div>
+              <div class="user-loc">📍 Austin, TX</div>
+              <div class="user-skills"><span class="skill-tag">Guitar</span><span class="skill-tag">Music Prod.</span></div>
+            </div>
+            <div class="user-card-right"><div class="rating-row">⭐ 4.9</div><button class="swap-btn">Swap</button></div>
+          </div>
+          <div class="user-card">
+            <div class="user-avatar" style="background:#FFF8E1;color:#F59E0B">LM</div>
+            <div class="user-info">
+              <div class="user-name">Luis M.</div>
+              <div class="user-loc">📍 LA, CA</div>
+              <div class="user-skills"><span class="skill-tag">Guitar</span><span class="skill-tag">Singing</span></div>
+            </div>
+            <div class="user-card-right"><div class="rating-row">⭐ 4.6</div><button class="swap-btn">Swap</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <div class="nav-item" onclick="showScreen('home',document.querySelectorAll('.nav-btn')[5])">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span class="nav-label">Home</span>
+        </div>
+        <div class="nav-item active">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <span class="nav-label">Search</span>
+        </div>
+        <div class="nav-item" onclick="showScreen('chats',document.querySelectorAll('.nav-btn')[7])">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          <span class="nav-label">Chats</span>
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+          <span class="nav-label">Alerts</span>
+        </div>
+        <div class="nav-item" onclick="showScreen('profile',document.querySelectorAll('.nav-btn')[8])">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span class="nav-label">Profile</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CHATS ── -->
+    <div class="screen" id="s-chats">
+      <div style="flex:1;overflow-y:auto;padding-bottom:70px;">
+        <div style="padding:44px 20px 16px">
+          <div class="screen-title" style="margin:0">Messages</div>
+        </div>
+        <div class="chat-item">
+          <div class="chat-avatar" style="background:var(--primary-surf)">JD</div>
+          <div class="chat-info">
+            <div class="chat-name">Jamie Davis</div>
+            <div class="chat-msg">Sounds great! Let's do Tuesday at 3pm 🎸</div>
+          </div>
+          <div class="chat-right">
+            <div class="chat-time">2m ago</div>
+            <div class="unread-badge">2</div>
+          </div>
+        </div>
+        <div class="chat-divider"></div>
+        <div class="chat-item">
+          <div class="chat-avatar" style="background:#FFF0F0;color:var(--accent)">SR</div>
+          <div class="chat-info">
+            <div class="chat-name">Sara Ramos</div>
+            <div class="chat-msg">I can help with the design, when are you free?</div>
+          </div>
+          <div class="chat-right">
+            <div class="chat-time">1h ago</div>
+          </div>
+        </div>
+        <div class="chat-divider"></div>
+        <div class="chat-item">
+          <div class="chat-avatar" style="background:#F0FFF4;color:#10B981">MK</div>
+          <div class="chat-info">
+            <div class="chat-name">Mike K.</div>
+            <div class="chat-msg">Thanks for the Python session! 🙌</div>
+          </div>
+          <div class="chat-right">
+            <div class="chat-time">3h ago</div>
+          </div>
+        </div>
+        <div class="chat-divider"></div>
+        <div class="chat-item">
+          <div class="chat-avatar" style="background:#FFF8E1;color:#F59E0B">LM</div>
+          <div class="chat-info">
+            <div class="chat-name">Luis M.</div>
+            <div class="chat-msg">Did you get my trade request?</div>
+          </div>
+          <div class="chat-right">
+            <div class="chat-time">Yesterday</div>
+            <div class="unread-badge">1</div>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <div class="nav-item" onclick="showScreen('home',document.querySelectorAll('.nav-btn')[5])">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span class="nav-label">Home</span>
+        </div>
+        <div class="nav-item" onclick="showScreen('search',document.querySelectorAll('.nav-btn')[6])">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <span class="nav-label">Search</span>
+        </div>
+        <div class="nav-item active">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+          <span class="nav-label">Chats</span>
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+          <span class="nav-label">Alerts</span>
+        </div>
+        <div class="nav-item" onclick="showScreen('profile',document.querySelectorAll('.nav-btn')[8])">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span class="nav-label">Profile</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PROFILE ── -->
+    <div class="screen" id="s-profile">
+      <div style="flex:1;overflow-y:auto;padding-bottom:70px;">
+        <div class="profile-hero">
+          <button class="profile-logout">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          </button>
+          <div class="profile-avatar-wrap">
+            <div class="profile-avatar">AJ</div>
+            <div class="profile-edit-dot">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </div>
+          </div>
+          <div class="profile-name">
+            Alex Johnson
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+          </div>
+          <div class="profile-loc">📍 New York, USA</div>
+        </div>
+        <div class="profile-stats">
+          <div class="pstat"><div class="pstat-val">12</div><div class="pstat-label">Trades Done</div></div>
+          <div class="pstat-divider"></div>
+          <div class="pstat"><div class="pstat-val">3</div><div class="pstat-label">Pending</div></div>
+          <div class="pstat-divider"></div>
+          <div class="pstat"><div class="pstat-val">4.8 ⭐</div><div class="pstat-label">Rating</div></div>
+        </div>
+        <div class="profile-section">
+          <div class="profile-section-title">About</div>
+          <div class="bio-box">I'm a freelance web developer who loves teaching Python and learning design skills. Always up for a good skill swap! 🚀</div>
+        </div>
+        <div class="profile-section">
+          <div class="profile-section-title">Skills I Offer 🎓</div>
+          <div class="profile-chips">
+            <span class="profile-chip teal">Web Development</span>
+            <span class="profile-chip teal">Python</span>
+            <span class="profile-chip teal">JavaScript</span>
+            <span class="profile-chip teal">SEO</span>
+          </div>
+        </div>
+        <div class="profile-section">
+          <div class="profile-section-title">Skills I Want 🌱</div>
+          <div class="profile-chips">
+            <span class="profile-chip coral">UI/UX Design</span>
+            <span class="profile-chip coral">Guitar</span>
+            <span class="profile-chip coral">Photography</span>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <div class="nav-item" onclick="showScreen('home',document.querySelectorAll('.nav-btn')[5])">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+          <span class="nav-label">Home</span>
+        </div>
+        <div class="nav-item" onclick="showScreen('search',document.querySelectorAll('.nav-btn')[6])">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <span class="nav-label">Search</span>
+        </div>
+        <div class="nav-item" onclick="showScreen('chats',document.querySelectorAll('.nav-btn')[7])">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          <span class="nav-label">Chats</span>
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+          <span class="nav-label">Alerts</span>
+        </div>
+        <div class="nav-item active">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+          <span class="nav-label">Profile</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /phone-frame -->
+</div><!-- /app-wrapper -->
+
+<script>
+  const skills = [
+    'Web Development','Mobile Development','UI/UX Design','Graphic Design',
+    'Video Editing','Photography','Music Production','Guitar','Piano','Singing',
+    'English Tutoring','Math Tutoring','Spanish','French','Arabic',
+    'Python','JavaScript','Data Science','Machine Learning','3D Modeling',
+    'Animation','Copywriting','Social Media Marketing','SEO','Excel',
+    'Accounting','Legal Advice','Cooking','Fitness Training','Yoga',
+    'Interior Design','Architecture','Carpentry','Plumbing','Electrical Work','Car Repair'
+  ];
+
+  let currentStep = 1;
+
+  function showScreen(name, btn) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('s-' + name).classList.add('active');
+    if (btn) btn.classList.add('active');
+  }
+
+  function advanceStep(step) {
+    document.querySelectorAll('.onboard-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('ob-step-' + step).classList.add('active');
+    currentStep = step;
+    document.getElementById('step-label').textContent = `Step ${step} of 4`;
+    document.getElementById('prog-fill').style.width = (step / 4 * 100) + '%';
+  }
+
+  function filterChips(input, containerId) {
+    const q = input.value.toLowerCase();
+    const container = document.getElementById(containerId);
+    container.querySelectorAll('.chip').forEach(chip => {
+      chip.style.display = chip.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  }
+
+  function buildChips(containerId, countId, accentClass) {
+    const container = document.getElementById(containerId);
+    const countEl = document.getElementById(countId);
+    skills.forEach(skill => {
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.textContent = skill;
+      chip.onclick = () => {
+        chip.classList.toggle('selected');
+        if (accentClass) {
+          chip.classList.toggle('selected-accent', !chip.classList.contains('selected') ? false : true);
+          chip.classList.remove('selected');
+          chip.classList.toggle(accentClass);
+        }
+        const count = container.querySelectorAll('.chip.' + (accentClass || 'selected')).length;
+        countEl.textContent = count > 0 ? `${count} selected` : '';
+      };
+      container.appendChild(chip);
+    });
+  }
+
+  // Init chips
+  buildChips('offer-chips', 'offer-count', 'selected');
+  buildChips('want-chips', 'want-count', 'selected-accent');
+
+  // OTP auto-advance
+  document.querySelectorAll('.otp-box').forEach((box, i, boxes) => {
+    box.addEventListener('input', () => {
+      if (box.value && i < boxes.length - 1) boxes[i + 1].focus();
+    });
+    box.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !box.value && i > 0) boxes[i - 1].focus();
+    });
+  });
+</script>
+</body>
+</html>
