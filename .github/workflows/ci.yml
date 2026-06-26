@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Install backend deps
+        run: npm install --prefix backend
+      - name: Install Flutter deps
+        run: |
+          cd swappit_flutter
+          flutter pub get
