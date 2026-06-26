@@ -1,8 +1,21 @@
+import 'package:flutter/foundation.dart';
+
 class ApiConstants {
   // Change to your deployed URL in production
-  static const String baseUrl = 'http://10.0.2.2:5000'; // Android emulator -> localhost
-  // static const String baseUrl = 'http://localhost:5000'; // iOS simulator
-  // static const String baseUrl = 'https://swappit-api.onrender.com'; // Production
+  static String get baseUrl {
+    if (kIsWeb) {
+      return 'http://localhost:5000';
+    }
+
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return 'http://10.0.2.2:5000';
+      case TargetPlatform.iOS:
+        return 'http://localhost:5000';
+      default:
+        return 'http://localhost:5000';
+    }
+  }
 
   // Auth
   static const String signup = '/auth/signup';

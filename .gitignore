@@ -1,6 +1,12 @@
 # Backend
+node_modules/
 backend/node_modules/
 backend/.env
+backend/backend/.env
+backend/.env.*
+backend/backend/.env.*
+.env
+.env.*
 
 # Flutter build
 swappit_flutter/build/
@@ -21,3 +27,6 @@ swappit_flutter/pubspec.lock
 .DS_Store
 Thumbs.db
 *.log
+
+# Local env docs
+.README_env

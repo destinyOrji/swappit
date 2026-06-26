@@ -36,7 +36,7 @@ class SkillChip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (isSelected) ...[
-              Icon(Icons.check_rounded, size: 14, color: Colors.white),
+              const Icon(Icons.check_rounded, size: 14, color: Colors.white),
               const SizedBox(width: 4),
             ],
             Text(

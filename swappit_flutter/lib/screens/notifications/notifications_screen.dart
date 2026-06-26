@@ -55,14 +55,14 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   ? const Center(
                       child: CircularProgressIndicator(color: AppColors.primary))
                   : _notifications.isEmpty
-                      ? Center(
+                      ? const Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.notifications_off_outlined,
+                              Icon(Icons.notifications_off_outlined,
                                   size: 64, color: AppColors.textHint),
-                              const SizedBox(height: 12),
-                              const Text('No notifications yet',
+                              SizedBox(height: 12),
+                              Text('No notifications yet',
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: AppColors.textSecondary)),
@@ -108,7 +108,7 @@ class _NotifTile extends StatelessWidget {
           Container(
             width: 42,
             height: 42,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppColors.primarySurface,
               shape: BoxShape.circle,
             ),

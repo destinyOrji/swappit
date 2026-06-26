@@ -1,3 +1,4 @@
+console.log('NODE_ENV:', process.env.NODE_ENV);
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { OAuth2Client } = require('google-auth-library');
@@ -36,7 +37,12 @@ const signup = async (req, res) => {
     // Generate and send OTP
     const otp = generateOTP();
     otpStore.set(email, { otp, expires: Date.now() + 10 * 60 * 1000 }); // 10 min
-    await sendOTPEmail(email, name, otp);
+
+    if (process.env.NODE_ENV === 'production') {
+      await sendOTPEmail(email, name, otp);
+    } else {
+      console.log(`DEV MODE — OTP for ${email}: ${otp}`);
+    }
 
     return res.status(201).json({
       success: true,
@@ -93,7 +99,12 @@ const resendOTP = async (req, res) => {
 
   const otp = generateOTP();
   otpStore.set(email, { otp, expires: Date.now() + 10 * 60 * 1000 });
-  await sendOTPEmail(email, rows[0].name, otp);
+
+  if (process.env.NODE_ENV === 'production') {
+    await sendOTPEmail(email, rows[0].name, otp);
+  } else {
+    console.log(`DEV MODE — OTP for ${email}: ${otp}`);
+  }
 
   return res.json({ success: true, message: 'OTP resent successfully' });
 };

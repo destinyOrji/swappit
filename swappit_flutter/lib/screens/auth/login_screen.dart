@@ -40,6 +40,17 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  void _fillDemoCredentials(String email, {bool autoLogin = false}) {
+    setState(() {
+      _emailCtrl.text = email;
+      _passwordCtrl.text = 'demo1234';
+    });
+
+    if (autoLogin) {
+      _handleLogin();
+    }
+  }
+
   void _handleGoogleLogin() {
     showDialog(
       context: context,
@@ -173,6 +184,61 @@ class _LoginScreenState extends State<LoginScreen> {
                 isLoading: auth.isLoading,
               ),
 
+              const SizedBox(height: 14),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: const Color(0x0F4CAF50),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFF81C784)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Demo accounts',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        _DemoLoginChip(
+                          label: 'Alicia',
+                          onTap: () => _fillDemoCredentials('alicia@example.com'),
+                        ),
+                        _DemoLoginChip(
+                          label: 'Mateo',
+                          onTap: () => _fillDemoCredentials('mateo@example.com'),
+                        ),
+                        _DemoLoginChip(
+                          label: 'Nadia',
+                          onTap: () => _fillDemoCredentials('nadia@example.com'),
+                        ),
+                        _DemoLoginChip(
+                          label: 'Jordan',
+                          onTap: () => _fillDemoCredentials('jordan@example.com'),
+                        ),
+                        _DemoLoginChip(
+                          label: 'Sofia',
+                          onTap: () => _fillDemoCredentials('sofia@example.com'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    TextButton(
+                      onPressed: () => _fillDemoCredentials('alicia@example.com', autoLogin: true),
+                      child: const Text('Quick sign in as Alicia'),
+                    ),
+                  ],
+                ),
+              ),
+
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -232,6 +298,37 @@ class _GoogleButton extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary)),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DemoLoginChip extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const _DemoLoginChip({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(999),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Text(
+          label,
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
+          ),
         ),
       ),
     );

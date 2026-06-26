@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../services/auth_provider.dart';
 import '../../services/api_service.dart';
-import '../../models/user_model.dart';
 import 'steps/profile_photo_step.dart';
 import 'steps/bio_location_step.dart';
 import 'steps/offer_skills_step.dart';

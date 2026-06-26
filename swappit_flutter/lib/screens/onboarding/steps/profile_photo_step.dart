@@ -16,7 +16,7 @@ class ProfilePhotoStep extends StatefulWidget {
 
 class _ProfilePhotoStepState extends State<ProfilePhotoStep> {
   File? _pickedImage;
-  bool _isUploading = false;
+  final bool _isUploading = false;
 
   Future<void> _pickImage(ImageSource source) async {
     final picker = ImagePicker();
