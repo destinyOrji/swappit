@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const mysql = require('mysql2/promise');
 
 const pool = mysql.createPool({
@@ -12,15 +14,29 @@ const pool = mysql.createPool({
   timezone: 'Z',
 });
 
-// Test connection on startup
+const ensureSchema = async () => {
+  try {
+    const conn = await pool.getConnection();
+    const schemaPath = path.join(__dirname, '..', 'database', 'schema.sql');
+    const schema = fs.readFileSync(schemaPath, 'utf8');
+    await conn.query(schema);
+    conn.release();
+    console.log('✅ Database schema initialized');
+  } catch (err) {
+    console.warn(`⚠️ MySQL connection failed: ${err.message}`);
+    console.warn('Continuing without a database connection so the backend can still start. Configure backend/.env or start MySQL to enable DB-backed features.');
+  }
+};
+
 (async () => {
   try {
     const conn = await pool.getConnection();
     console.log('✅ MySQL connected successfully');
     conn.release();
+    await ensureSchema();
   } catch (err) {
-    console.error('❌ MySQL connection failed:', err.message);
-    process.exit(1);
+    console.warn(`⚠️ MySQL connection failed: ${err.message}`);
+    console.warn('Continuing without a database connection so the backend can still start. Configure backend/.env or start MySQL to enable DB-backed features.');
   }
 })();
 

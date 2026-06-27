@@ -12,6 +12,43 @@ const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString()
 
 // In-memory OTP store (use Redis in production)
 const otpStore = new Map();
+const fallbackUsers = [];
+
+const normalizeEmail = (email) => String(email || '').trim().toLowerCase();
+
+const shouldUseDatabase = async () => {
+  try {
+    await db.execute('SELECT 1');
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
+
+const getFallbackUserByEmail = (email) => {
+  const normalizedEmailValue = normalizeEmail(email);
+  return fallbackUsers.find((user) => normalizeEmail(user.email) === normalizedEmailValue);
+};
+
+const createFallbackUser = ({ name, email, phone, password }) => {
+  const user = {
+    id: fallbackUsers.length + 1001,
+    name,
+    email: normalizeEmail(email),
+    phone: phone || null,
+    password,
+    photo_url: null,
+    bio: null,
+    location: null,
+    rating: 4.0,
+    completed_tasks: 0,
+    pending_tasks: 0,
+    verified: false,
+    created_at: new Date(),
+  };
+  fallbackUsers.push(user);
+  return user;
+};
 
 // ─── Sign Up ─────────────────────────────────────────────
 const signup = async (req, res) => {
@@ -22,6 +59,27 @@ const signup = async (req, res) => {
   }
 
   try {
+    const useDatabase = await shouldUseDatabase();
+
+    if (!useDatabase) {
+      const existingUser = getFallbackUserByEmail(email);
+      if (existingUser) {
+        return res.status(409).json({ success: false, message: 'Email already registered' });
+      }
+
+      const hashed = await bcrypt.hash(password, 12);
+      const fallbackUser = createFallbackUser({ name, email, phone, password: hashed });
+      const otp = generateOTP();
+      otpStore.set(normalizeEmail(email), { otp, expires: Date.now() + 10 * 60 * 1000 });
+
+      console.warn('Using in-memory fallback auth store because MySQL is unavailable.');
+      return res.status(201).json({
+        success: true,
+        message: 'Account created. OTP sent to your email.',
+        userId: fallbackUser.id,
+      });
+    }
+
     // Check duplicate email
     const [existing] = await db.execute('SELECT id FROM users WHERE email = ?', [email]);
     if (existing.length) {
@@ -51,7 +109,12 @@ const signup = async (req, res) => {
     });
   } catch (err) {
     console.error('Signup error:', err);
-    return res.status(500).json({ success: false, message: 'Server error during signup' });
+    const message = err && err.code === 'ER_ACCESS_DENIED_ERROR'
+      ? 'Database credentials are invalid. Please verify the MySQL user and password.'
+      : err && err.code === 'ECONNREFUSED'
+        ? 'Database server is not reachable. Please start MySQL and confirm the host/port.'
+        : 'Server error during signup';
+    return res.status(500).json({ success: false, message });
   }
 };
 
@@ -59,23 +122,35 @@ const signup = async (req, res) => {
 const verifyOTP = async (req, res) => {
   const { email, otp } = req.body;
 
-  const record = otpStore.get(email);
+  const normalizedEmail = normalizeEmail(email);
+  const record = otpStore.get(normalizedEmail);
   if (!record) {
     return res.status(400).json({ success: false, message: 'No OTP requested for this email' });
   }
   if (Date.now() > record.expires) {
-    otpStore.delete(email);
+    otpStore.delete(normalizedEmail);
     return res.status(400).json({ success: false, message: 'OTP expired. Please request a new one.' });
   }
   if (record.otp !== otp) {
     return res.status(400).json({ success: false, message: 'Invalid OTP' });
   }
 
-  otpStore.delete(email);
+  otpStore.delete(normalizedEmail);
 
-  await db.execute('UPDATE users SET verified = TRUE WHERE email = ?', [email]);
-  const [rows] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
-  const user = rows[0];
+  const useDatabase = await shouldUseDatabase();
+  let user;
+
+  if (!useDatabase) {
+    user = getFallbackUserByEmail(email);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    user.verified = true;
+  } else {
+    await db.execute('UPDATE users SET verified = TRUE WHERE email = ?', [email]);
+    const [rows] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
+    user = rows[0];
+  }
 
   const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
@@ -92,6 +167,20 @@ const verifyOTP = async (req, res) => {
 // ─── Resend OTP ──────────────────────────────────────────
 const resendOTP = async (req, res) => {
   const { email } = req.body;
+  const useDatabase = await shouldUseDatabase();
+
+  if (!useDatabase) {
+    const fallbackUser = getFallbackUserByEmail(email);
+    if (!fallbackUser) {
+      return res.status(404).json({ success: false, message: 'Email not found' });
+    }
+
+    const otp = generateOTP();
+    otpStore.set(normalizeEmail(email), { otp, expires: Date.now() + 10 * 60 * 1000 });
+    console.log(`DEV MODE — OTP for ${email}: ${otp}`);
+    return res.json({ success: true, message: 'OTP resent successfully' });
+  }
+
   const [rows] = await db.execute('SELECT name FROM users WHERE email = ?', [email]);
   if (!rows.length) {
     return res.status(404).json({ success: false, message: 'Email not found' });
@@ -118,6 +207,32 @@ const login = async (req, res) => {
   }
 
   try {
+    const useDatabase = await shouldUseDatabase();
+
+    if (!useDatabase) {
+      const fallbackUser = getFallbackUserByEmail(email);
+      if (!fallbackUser) {
+        return res.status(401).json({ success: false, message: 'Invalid email or password' });
+      }
+
+      const match = await bcrypt.compare(password, fallbackUser.password);
+      if (!match) {
+        return res.status(401).json({ success: false, message: 'Invalid email or password' });
+      }
+
+      const token = jwt.sign({ id: fallbackUser.id, email: fallbackUser.email }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRES_IN || '7d',
+      });
+
+      return res.json({
+        success: true,
+        message: 'Login successful',
+        token,
+        user: sanitizeUser(fallbackUser),
+        isProfileComplete: !!(fallbackUser.bio && fallbackUser.location),
+      });
+    }
+
     const [rows] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
     if (!rows.length) {
       return res.status(401).json({ success: false, message: 'Invalid email or password' });
@@ -162,26 +277,45 @@ const googleSignIn = async (req, res) => {
     const payload = ticket.getPayload();
     const { email, name, picture, sub: googleId } = payload;
 
-    let [rows] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
+    const useDatabase = await shouldUseDatabase();
+    let [rows] = [];
     let user;
     let isNewUser = false;
 
-    if (rows.length) {
-      user = rows[0];
-      // Update photo if not set
-      if (!user.photo_url && picture) {
-        await db.execute('UPDATE users SET photo_url = ? WHERE id = ?', [picture, user.id]);
+    if (!useDatabase) {
+      user = getFallbackUserByEmail(email);
+      if (!user) {
+        user = createFallbackUser({
+          name,
+          email,
+          phone: null,
+          password: bcrypt.hashSync(googleId, 10),
+        });
+        user.photo_url = picture || null;
+        user.verified = true;
+        isNewUser = true;
+      } else if (!user.photo_url && picture) {
         user.photo_url = picture;
       }
     } else {
-      // Create new user from Google
-      const [result] = await db.execute(
-        `INSERT INTO users (name, email, photo_url, password, verified) VALUES (?, ?, ?, ?, TRUE)`,
-        [name, email, picture || null, bcrypt.hashSync(googleId, 10)]
-      );
-      const [newRows] = await db.execute('SELECT * FROM users WHERE id = ?', [result.insertId]);
-      user = newRows[0];
-      isNewUser = true;
+      [rows] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
+      if (rows.length) {
+        user = rows[0];
+        // Update photo if not set
+        if (!user.photo_url && picture) {
+          await db.execute('UPDATE users SET photo_url = ? WHERE id = ?', [picture, user.id]);
+          user.photo_url = picture;
+        }
+      } else {
+        // Create new user from Google
+        const [result] = await db.execute(
+          `INSERT INTO users (name, email, photo_url, password, verified) VALUES (?, ?, ?, ?, TRUE)`,
+          [name, email, picture || null, bcrypt.hashSync(googleId, 10)]
+        );
+        const [newRows] = await db.execute('SELECT * FROM users WHERE id = ?', [result.insertId]);
+        user = newRows[0];
+        isNewUser = true;
+      }
     }
 
     const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
